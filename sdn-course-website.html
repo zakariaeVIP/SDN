@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours SDN - Software Defined Networking</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --light-color: #f0f9ff;
+            --dark-color: #1e293b;
+            --success-color: #10b981;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        nav {
+            background-color: var(--dark-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0.5rem 0;
+        }
+        
+        nav ul li {
+            margin: 0 1rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .hero {
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--dark-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            flex: 1 1 300px;
+            max-width: 350px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-body ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-body p {
+            margin-bottom: 1rem;
+        }
+        
+        .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .topic {
+            flex: 1 1 48%;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .topic h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .topic h3 .number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .compare-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .compare-item {
+            flex: 1 1 300px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .compare-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .compare-item.traditional {
+            border-top: 4px solid #e11d48;
+        }
+        
+        .compare-item.sdn {
+            border-top: 4px solid var(--success-color);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .architecture-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        
+        .layer {
+            width: 80%;
+            max-width: 600px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .layer::after {
+            content: "↓";
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: var(--dark-color);
+        }
+        
+        .layer:last-child::after {
+            content: none;
+        }
+        
+        .application-layer {
+            background-color: #8b5cf6;
+        }
+        
+        .control-layer {
+            background-color: #ec4899;
+        }
+        
+        .infrastructure-layer {
+            background-color: #f97316;
+        }
+        
+        .advantages {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .advantage {
+            flex: 1 1 200px;
+            background-color: var(--light-color);
+            border-left: 4px solid var(--success-color);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* Accordion Style */
+        .accordion {
+            margin: 2rem 0;
+        }
+        
+        .accordion-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .accordion-header {
+            background-color: var(--light-color);
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-header:hover {
+            background-color: #e0f2fe;
+        }
+        
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .accordion-content-inner {
+            padding: 1rem;
+        }
+        
+        .active .accordion-content {
+            max-height: 500px;
+        }
+        
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem 0;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .topic {
+                flex: 1 1 100%;
+            }
+            
+            .layer {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Software Defined Networking (SDN)</h1>
+            <p>Formation complète sur les réseaux définis par logiciel</p>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#securite">Sécurité</a></li>
+            <li><a href="#virtualisation">Virtualisation</a></li>
+            <li><a href="#cloud">Cloud Computing</a></li>
+            <li><a href="#sdn">SDN</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero">
+        <div class="container">
+            <h2>Transformez votre réseau avec SDN</h2>
+            <p>Découvrez comment le Software Defined Networking révolutionne la gestion des infrastructures réseau en séparant le plan de contrôle du plan de données.</p>
+            <a href="#sdn" class="btn">En savoir plus</a>
+        </div>
+    </section>
+    
+    <section id="introduction" class="section">
+        <div class="container">
+            <h2 class="section-title">Introduction aux réseaux modernes</h2>
+            <div class="topics">
+                <div class="topic">
+                    <h3><span class="number">1</span> Infrastructure traditionnelle</h3>
+                    <p>L'infrastructure réseau traditionnelle présente plusieurs inconvénients :</p>
+                    <ul>
+                        <li>Coûts d'équipement élevés</li>
+                        <li>Limitations matérielles</li>
+                        <li>Administration complexe</li>
+                        <li>Problèmes de compatibilité</li>
+                    </ul>
+                </div>
+                <div class="topic">
+                    <h3><span class="number">2</span> Évolution des besoins</h3>
+                    <p>Les besoins des entreprises modernes nécessitent des réseaux :</p>
+                    <ul>
+                        <li>Plus flexibles et évolutifs</li>
+                        <li>Facilement administrables</li>
+                        <li>Économiques</li>
+                        <li>Tolérants aux pannes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="securite" class="section" style="background-color: var(--light-color);">
+        <div class="container">
+            <h2 class="section-title">Éléments de sécurité réseau</h2>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pare-feu (Firewall)</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Rôle principal :</strong> Filtrage</p>
+                        <p><strong>Types :</strong></p>
+                        <ul>
+                            <li>Fortinet</li>
+                            <li>Palo Alto</li>
+                            <li>PF Sense</li>
+                            <li>ASA</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>IDS/IPS</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>IDS :</strong> Intrusion Detection System</p>
+                        <p><strong>IPS :</strong> Intrusion Prevention System</p>
+                        <p>Ces systèmes permettent de détecter et prévenir les tentatives d'intrusion sur le réseau.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Autres éléments</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>VPN :</strong> Connexions sécurisées à distance</li>
+                            <li><strong>Proxy :</strong> Filtrage et contrôle d'accès</li>
+                            <li><strong>Zone DMZ :</strong> Zone démilitarisée entre réseau interne et externe</li>
+                            <li><strong>Protocoles & Ports :</strong> HTTP (80), HTTPS (443), etc.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="virtualisation" class="section">
+        <div class="container">
+            <h2 class="section-title">Virtualisation</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">La virtualisation permet d'implémenter plusieurs machines virtuelles sur un seul serveur physique.</p>
+            
+            <div class="compare-container">
+                <div class="compare-item traditional">
+                    <h3>Infrastructure traditionnelle</h3>
+                    <p><strong>Problèmes :</strong></p>
+                    <ul>
+                        <li>Gaspillage de performances</li>
+                        <li>Coût élevé (un service = une machine)</li>
+                        <li>Administration complexe</li>
+                        <li>Faible évolutivité</li>
+                    </ul>
+                </div>
+                
+                <div class="compare-item sdn">
+                    <h3>Solution : Virtualisation</h3>
+                    <p><strong>Types de virtualisation :</strong></p>
+                    <ul>
+                        <li><strong>Type 1 (natif / bare metal) :</strong> Plus rapide, fonctionne directement sur le matériel (ex: Hyper-V)</li>
+                        <li><strong>Type 2 (hébergé) :</strong> Fonctionne sur un système d'exploitation hôte (ex: VirtualBox, VMware Workstation)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="cloud" class="section" style="background-color: var(--light-color);">
+        <div class="container">
+            <h2 class="section-title">Cloud Computing</h2>
+            
+            <div class="advantages">
+                <div class="advantage">
+                    <h4>Accès universel</h4>
+                    <p>Accès à tout moment et de n'importe quel lieu</p>
+                </div>
+                <div class="advantage">
+                    <h4>Scalabilité</h4>
+                    <p>Évolutivité automatique selon les besoins</p>
+                </div>
+                <div class="advantage">
+                    <h4>Réduction des coûts</h4>
+                    <p>Paiement à l'usage, sans investissement lourd</p>
+                </div>
+                <div class="advantage">
+                    <h4>Compatibilité</h4>
+                    <p>Interopérabilité entre différents services</p>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        Modèles de Cloud <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <ul>
+                                <li><strong>Cloud Public :</strong> Accessible à tous (Microsoft, Amazon, Google)</li>
+                                <li><strong>Cloud Privé :</strong> Infrastructure locale et personnelle</li>
+                                <li><strong>Cloud Hybride :</strong> Combinaison du public et du privé</li>
+                                <li><strong>Cloud Communautaire :</strong> Partagé entre plusieurs entreprises</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        Services Cloud <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <ul>
+                                <li><strong>IaaS (Infrastructure as a Service) :</strong> Infrastructure réseau en mode cloud (ex: Microsoft Azure, Amazon EC2)</li>
+                                <li><strong>PaaS (Platform as a Service) :</strong> Environnement de développement</li>
+                                <li><strong>SaaS (Software as a Service) :</strong> Service applicatif distant (ex: Google Docs, Office 365)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="sdn" class="section">
+        <div class="container">
+            <h2 class="section-title">Software Defined Networking (SDN)</h2>
+            
+            <div class="compare-container">
+                <div class="compare-item traditional">
+                    <h3>Réseau traditionnel</h3>
+                    <p><strong>Inconvénients :</strong></p>
+                    <ul>
+                        <li>Administration complexe (configuration manuelle)</li>
+                        <li>Évolutivité difficile</li>
+                        <li>Tolérance aux pannes limitée</li>
+                        <li>Gaspillage de temps</li>
+                        <li>Problèmes de compatibilité</li>
+                    </ul>
+                </div>
+                
+                <div class="compare-item sdn">
+                    <h3>Architecture SDN</h3>
+                    <p><strong>Avantages :</strong></p>
+                    <ul>
+                        <li>Administration centralisée et simplifiée</li>
+                        <li>Évolutivité simple et rapide</li>
+                        <li>Meilleure tolérance aux pannes</li>
+                        <li>Gain de temps considérable</li>
+                        <li>Standardisation (indépendance des constructeurs)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem;">
+                <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-color);">Comparaison des plans dans les réseaux</h3>
+                
+                <div class="compare-container">
+                    <div class="compare-item traditional">
+                        <h3>Réseaux traditionnels</h3>
+                        <p>Tous les plans sont intégrés dans chaque équipement :</p>
+                        <ol>
+                            <li>Plan de gestion (Commandes)</li>
+                            <li>Plan de contrôle</li>
+                            <li>Plan de données (CPU + RAM)</li>
+                        </ol>
+                        <p style="margin-top: 1rem;"><strong>Problèmes :</strong> Charge sur CPU, latence, difficulté d'optimisation</p>
+                    </div>
+                    
+                    <div class="compare-item sdn">
+                        <h3>Réseaux SDN</h3>
+                        <p>Séparation des plans :</p>
+                        <ol>
+                            <li>Plan de gestion → Applications</li>
+                            <li>Plan de contrôle → Contrôleur SDN centralisé</li>
+                            <li>Plan de données → Équipements réseau</li>
+                        </ol>
+                        <p style="margin-top: 1rem;"><strong>Avantage :</strong> Gestion centralisée et intelligente</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="architecture" class="section" style="background-color: var(--light-color);">
+        <div class="container">
+            <h2 class="section-title">Architecture SDN</h2>
+            
+            <div class="architecture-diagram">
+                <div class="layer application-layer">
+                    <h3>1. Couche Application</h3>
+                    <p>Applications métiers, scripts (Terraform, Ansible), APIs (REST)</p>
+                </div>
+                <div class="layer control-layer">
+                    <h3>2. Couche de Contrôle</h3>
+                    <p>Contrôleur SDN (APIC, ONOS, OpenDaylight)</p>
+                </div>
+                <div class="layer infrastructure-layer">
+                    <h3>3. Couche Infrastructure</h3>
+                    <p>Équipements physiques (switches, routeurs) avec OpenFlow</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem;">
+                <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-color);">Types de fonctionnement OpenFlow</h3>
+                
+                <div class="compare-container">
+                    <div class="compare-item">
+                        <h3>Réactif</h3>
+                        <p>Les paquets inconnus sont envoyés au contrôleur qui ajoute des règles à la volée.</p>
+                        <p><strong>Avantage :</strong> Dynamique</p>
+                        <p><strong>Inconvénient :</strong> Plus lent (latence supplémentaire)</p>
+                    </div>
+                    
+                    <div class="compare-item">
+                        <h3>Proactif</h3>
+                        <p>Les règles sont chargées à l'avance dans la table OpenFlow dès le démarrage.</p>
+                        <p><strong>Avantage :</strong> Rapide, faible latence</p>
+                        <p><strong>Inconvénient :</strong> Moins flexible (règles fixes)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion" style="margin-top: 3rem;">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        Types de paquets en SDN (OpenFlow) <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <h4>Paquets Asynchrones</h4>
+                            <ul>
+                                <li><strong>Echo / Request :</strong> Découverte des contrôleurs SDN</li>
+                                <li><strong>Port Status :</strong> Information sur les modifications d'une entrée, gestion des erreurs</li>
+                            </ul>
+                            <h4>Packet Out</h4>
+                            <ul>
+                                <li>Permet d'ajouter, supprimer ou modifier une règle dans la table OpenFlow</li>
+                                <li>Utilisé par le contrôleur vers les équipements réseau</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        Infrastructure as Code (IaC) <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <p>L'Infrastructure as Code permet le déploiement automatique de l'infrastructure réseau via des scripts et des langages de programmation.</p>
+                            <ul>
+                                <li>Automatisation complète de l'infrastructure</li>
+                                <li>Utilisation d'outils comme Terraform ou Ansible</li>
+                                <li>Redondance et résilience configurées par code</li>
+                                <li>Équilibrage de charge intelligent</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        Problématique d'équilibrage de charge <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <p><strong>Exemple :</strong> Deux serveurs web avec une charge inégale</p>
+                            <p><strong>Objectif :</strong></p>
+                            <ul>
+                                <li>Répartir les charges de façon uniforme</li>
+                                <li>Éviter les goulets d'étranglement</li>
+                            </ul>
+                            <p><strong>Solution :</strong> SDN permet une gestion intelligente de l'équilibrage de charge via des règles programmables</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Cours Software Defined Networking (SDN)</p>
+            <p>Une formation complète sur les technologies SDN et l'évolution des réseaux</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Script pour l'accordéon
+        document.querySelectorAll('.accordion-header').forEach(item => {
+            item.addEventListener('click', event => {
+                const parent = item.parentElement;
+                parent.classList.toggle('active');
+                
+                // Fermer les autres accordéons
+                document.querySelectorAll('.accordion-item').forEach(accordionItem => {
+                    if (accordionItem !== parent) {
+                        accordionItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // Smooth scroll pour les liens de navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 60,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
